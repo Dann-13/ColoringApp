@@ -1,13 +1,16 @@
 import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
-import { StyleSheet, Text, View, Button, Dimensions, TouchableWithoutFeedback, Alert } from 'react-native';
+import { StyleSheet, Text, View, Button, Dimensions, TouchableWithoutFeedback, Alert, Modal } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Svg, { Rect } from 'react-native-svg';
+import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider } from 'reanimated-color-picker';
+
 const { width } = Dimensions.get('window');
 
 export default function App() {
+  const [showModal, setShowModal] = useState(false);
   // Estado para el color del SVG
   const [svgColor, setSvgColor] = useState<string>('green');
   // Estado para el color seleccionado
@@ -25,6 +28,11 @@ export default function App() {
   const handleSvgPress = () => {
     setSvgColor(selectedColor); // Cambia el color del SVG al color seleccionado
     Alert.alert('SVG cambiado de color!');
+  };
+  const onSelectColor = ({ hex }) => {
+    // do something with the selected color.
+    console.log(hex);
+    setSelectedColor(hex);
   };
 
   return (
@@ -46,13 +54,19 @@ export default function App() {
           </Svg>
         </View>
         <View style={styles.paletteContainer}>
-          {colors.map((color) => (
-            <TouchableOpacity
-              key={color}
-              style={[styles.colorButton, { backgroundColor: color }]}
-              onPress={() => handleColorChange(color)}
-            />
-          ))}
+          <Button title='Color Picker' onPress={() => setShowModal(true)} />
+
+          <Modal visible={showModal} animationType='slide'>
+            <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColor}>
+              <Preview />
+              <Panel1 />
+              <HueSlider />
+              <OpacitySlider />
+              <Swatches />
+            </ColorPicker>
+
+            <Button title='Ok' onPress={() => setShowModal(false)} />
+          </Modal>
         </View>
       </View>
     </GestureHandlerRootView>

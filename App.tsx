@@ -6,32 +6,30 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Svg, { Rect } from 'react-native-svg';
 import ColorPicker, { Panel1, Swatches, Preview, OpacitySlider, HueSlider } from 'reanimated-color-picker';
+import Popover from './components/Colors/Popover';
+import Icon from './components/Images/Icon';
 
 const { width } = Dimensions.get('window');
 
 export default function App() {
-  const [showModal, setShowModal] = useState(false);
   // Estado para el color del SVG
   const [svgColor, setSvgColor] = useState<string>('green');
   // Estado para el color seleccionado
   const [selectedColor, setSelectedColor] = useState<string>('green');
+  // Estado para mostrar u ocultar el popover
+  const [isPopoverVisible, setPopoverVisible] = useState(false);
 
-  // Lista de colores para la paleta
-  const colors: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'orange'];
-
-  // Función para cambiar el color seleccionado
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color);
-  };
-
-  // Función para manejar el toque en el SVG
+  /* // Función para manejar el toque en el SVG
   const handleSvgPress = () => {
     setSvgColor(selectedColor); // Cambia el color del SVG al color seleccionado
-    Alert.alert('SVG cambiado de color!');
   };
+ */
+  const handleIconPress = () => {
+    setSvgColor(selectedColor); // Cambia el color del SVG al color seleccionado
+  };
+
+
   const onSelectColor = ({ hex }) => {
-    // do something with the selected color.
-    console.log(hex);
     setSelectedColor(hex);
   };
 
@@ -39,35 +37,26 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <View style={styles.textContainer}>
-          <Text style={styles.text}>Este es una Prueba</Text>
+          <Text style={styles.text}>Coloring</Text>
         </View>
+
         <View style={styles.svgContainer}>
-          <Svg height={300} width={width} style={styles.svg}>
-            <Rect
-              x="0"
-              y="0"
-              width={width}
-              height={300}
-              fill={svgColor} // Usa el color del estado
-              onPress={handleSvgPress} // Maneja el evento de toque del SVG
-            />
-          </Svg>
+          <TouchableOpacity onPress={handleIconPress}>
+            <Icon color={svgColor} />
+          </TouchableOpacity>
         </View>
         <View style={styles.paletteContainer}>
-          <Button title='Color Picker' onPress={() => setShowModal(true)} />
-
-          <Modal visible={showModal} animationType='slide'>
-            <ColorPicker style={{ width: '70%' }} value='red' onComplete={onSelectColor}>
-              <Preview />
-              <Panel1 />
-              <HueSlider />
-              <OpacitySlider />
-              <Swatches />
-            </ColorPicker>
-
-            <Button title='Ok' onPress={() => setShowModal(false)} />
-          </Modal>
+          <Button title='Color Picker' onPress={() => setPopoverVisible(true)} />
         </View>
+        <Popover isVisible={isPopoverVisible} onClose={() => setPopoverVisible(false)}>
+          <ColorPicker value={selectedColor} onComplete={onSelectColor}>
+            <Preview />
+            <Panel1 />
+            <HueSlider />
+            <OpacitySlider />
+            <Swatches />
+          </ColorPicker>
+        </Popover>
       </View>
     </GestureHandlerRootView>
   );
@@ -78,7 +67,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    backgroundColor: 'white',
   },
   textContainer: {
     position: 'absolute',
@@ -92,19 +81,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
   },
-  svg: {
-    // Puedes ajustar estilos adicionales aquí si es necesario
-  },
   paletteContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
-    marginTop: 20,
-  },
-  colorButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    margin: 5,
+    marginBottom: 20,
   },
 });

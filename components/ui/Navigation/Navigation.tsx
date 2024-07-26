@@ -2,17 +2,30 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import { NavigationContainer } from '@react-navigation/native'
 import AntDesign from '@expo/vector-icons/AntDesign';
-
+import { createStackNavigator } from '@react-navigation/stack';
 //Screens
 import HomeScreen from '../../../Screens/HomeScreen'
 import FavoritosScreen from '../../../Screens/FavoritosScreen'
 import YourImage from '../../../Screens/YourImage';
+import ColoringStack from '../../Coloring/ColoringStack';
+const HomeStackNavigation = createStackNavigator();
+function HomeStack() {
+    return (
+        <HomeStackNavigation.Navigator initialRouteName='HomeScreen'>
+            <HomeStackNavigation.Screen name="HomeScreen" component={HomeScreen}  options={{headerShown:false}}/>
+            <HomeStackNavigation.Screen name="Coloring" component={ColoringStack} options={{ title: 'Colorear' }} />
+        </HomeStackNavigation.Navigator>
+    );
+}
+
 const Tab = createBottomTabNavigator();
+
+
 function MyTabs() {
     return (
         <Tab.Navigator initialRouteName='Home' screenOptions={{ tabBarActiveTintColor: "purple" }}>
             <Tab.Screen name='Home' component={
-                HomeScreen
+                HomeStack
             } options={{
                 tabBarLabel: 'Home',
                 tabBarIcon: ({ color, size }) => (

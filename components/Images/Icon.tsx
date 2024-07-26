@@ -1,7 +1,7 @@
 import * as React from "react"
 import Svg, { Path } from "react-native-svg"
 
-function SvgComponent({color}) {
+function Icon({color}) {
   return (
     <Svg
       width="210mm"
@@ -20,4 +20,4 @@ function SvgComponent({color}) {
   )
 }
 
-export default SvgComponent
+export default Icon
